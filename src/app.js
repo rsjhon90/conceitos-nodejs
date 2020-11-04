@@ -9,6 +9,18 @@ app.use(cors());
 
 const repositories = [];
 
+function logRequests(request, response, next) {
+  const { method, url } = request; //middleware
+
+  const logLabel = `[${method.toUpperCase()}] url:${url}`;
+
+  console.time(logLabel);
+
+  next(); //Próximo middleware
+
+  console.timeEnd(logLabel);
+}
+
 function validateRepositoryId(request, response, next) {
   const { id } = request.params;
 
@@ -18,6 +30,8 @@ function validateRepositoryId(request, response, next) {
 
   return next();
 }
+
+app.use(logRequests);
 
 app.use('/repositories/:id', validateRepositoryId);
 app.use('/repositories/:id/like', validateRepositoryId);
